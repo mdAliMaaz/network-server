@@ -1,39 +1,58 @@
 import User from "../models/user.model";
 import { NextFunction, Request, Response } from "express";
-import { SignUpUser } from "../types";
+import { SignInUser, SignUpUser } from "../types";
 import { CustomResponse } from "../utils/response";
+import { HashPassword } from "../utils/bcrypt";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
-  const { name, username, password, email }: SignUpUser = req.body;
+  try {
+    const { name, username, password, email }: SignUpUser = req.body;
 
-  if (!name || !username || !password || !email) {
-    return res.status(400).json({ message: "all fields are required." });
-  }
-  const existingUser = await User.findOne({ email });
+    if (!name || !username || !password || !email) {
+      return res.status(400).json({ message: "all fields are required." });
+    }
+    const existingUser = await User.findOne({ email });
 
-  if (existingUser) {
-    return res.status(400).json({ message: "email is already in use." });
-  }
+    if (existingUser) {
+      return res.status(400).json({ message: "email is already in use." });
+    }
 
-  const isUserNameUnique = await User.findOne({ username });
+    const isUserNameUnique = await User.findOne({ username });
 
-  if (isUserNameUnique) {
-    return res
-      .status(400)
-      .json({ message: "username is already taken try something new." });
-  }
+    if (isUserNameUnique) {
+      return res
+        .status(400)
+        .json({ message: "username is already taken try something new." });
+    }
 
-  const newUser = await User.create({ ...req.body });
+    const newUser = await User.create({ ...req.body });
 
-  if (newUser) {
-    res.status(201).json(new CustomResponse(201, "signup successfull."));
-  } else {
+    if (newUser) {
+      res.status(201).json(new CustomResponse(201, "signup successfull."));
+    } else {
+      next();
+    }
+  } catch (error) {
     next();
   }
 }
 
 export async function signIn(req: Request, res: Response) {
-  res.send("i am signin");
+  const { email, password }: SignInUser = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json(new CustomResponse(404, "User not found"));
+  }
+
+  const isPasswordCorrect = HashPassword.check(password, user.password);
+
+  if (!isPasswordCorrect) {
+    return res.status(400).json(new CustomResponse(400, "Invalid Password"));
+  }
+
+  res.status(203).json(new CustomResponse(203, "login successfull"));
 }
 
 export async function getUsers(req: Request, res: Response) {
