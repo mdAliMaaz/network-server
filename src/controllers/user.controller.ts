@@ -1,8 +1,10 @@
 import User from "../model/user.model";
 import { Request, Response } from "express";
+import { SignUpUser } from "../types";
 
 export async function signUp(req: Request, res: Response) {
-  res.send("i am signup");
+  const { name, username, password, email }: SignUpUser = req.body;
+  console.log(req.body);
 }
 
 export async function signIn(req: Request, res: Response) {
