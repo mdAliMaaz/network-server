@@ -1,13 +1,13 @@
 import User from "../models/user.model";
 import { NextFunction, Request, Response } from "express";
-import { SignInUser, SignUpUser } from "../types";
+import { ISignInUser, ISignUpUser } from "../types";
 import { CustomResponse } from "../utils/Response";
 import { HashPassword } from "../utils/Bcrypt";
 import { Jwt } from "../utils/Jwt";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
-    const { name, username, password, email }: SignUpUser = req.body;
+    const { name, username, password, email }: ISignUpUser = req.body;
 
     if (!name || !username || !password || !email) {
       return res.status(400).json({ message: "all fields are required." });
@@ -39,7 +39,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function signIn(req: Request, res: Response) {
-  const { email, password }: SignInUser = req.body;
+  const { email, password }: ISignInUser = req.body;
 
   const user = await User.findOne({ email });
 
@@ -55,20 +55,26 @@ export async function signIn(req: Request, res: Response) {
   const payload = { email: user.email, username: user.username };
 
   const accessToken = Jwt.generateAccessToken(payload);
-  const refreshtoken = Jwt.generateRefreshToken(payload);
+  const refreshToken = Jwt.generateRefreshToken(payload);
 
   res.cookie("access_token", accessToken);
-  res.cookie("refresh_token", refreshtoken);
+  res.cookie("refresh_token", refreshToken);
 
-  res.status(203).json(new CustomResponse(203, "login successfull"));
+  res.status(203).json(
+    new CustomResponse(203, "login successfull", {
+      accessToken,
+      refreshToken,
+    })
+  );
 }
 
 export async function getUsers(req: Request, res: Response) {
   res.send("i am getUsers");
 }
 
-export async function getProfile(req: Request, res: Response) {
-  res.send("i am getProfile");
+export async function getProfile(req: Request, res: any) {
+  console.log(res.user);
+  res.send("getProfile");
 }
 
 export async function updateUser(req: Request, res: Response) {
