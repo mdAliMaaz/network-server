@@ -1,8 +1,9 @@
 import User from "../models/user.model";
 import { NextFunction, Request, Response } from "express";
 import { SignInUser, SignUpUser } from "../types";
-import { CustomResponse } from "../utils/response";
-import { HashPassword } from "../utils/bcrypt";
+import { CustomResponse } from "../utils/Response";
+import { HashPassword } from "../utils/Bcrypt";
+import { Jwt } from "../utils/Jwt";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
@@ -51,6 +52,13 @@ export async function signIn(req: Request, res: Response) {
   if (!isPasswordCorrect) {
     return res.status(400).json(new CustomResponse(400, "Invalid Password"));
   }
+  const payload = { email: user.email, username: user.username };
+
+  const accessToken = Jwt.generateAccessToken(payload);
+  const refreshtoken = Jwt.generateRefreshToken(payload);
+
+  res.cookie("access_token", accessToken);
+  res.cookie("refresh_token", refreshtoken);
 
   res.status(203).json(new CustomResponse(203, "login successfull"));
 }
