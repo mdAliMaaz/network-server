@@ -1,10 +1,34 @@
 import User from "../model/user.model";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SignUpUser } from "../types";
 
-export async function signUp(req: Request, res: Response) {
+export async function signUp(req: Request, res: Response, next: NextFunction) {
   const { name, username, password, email }: SignUpUser = req.body;
-  console.log(req.body);
+
+  if (!name || !username || !password || !email) {
+    return res.status(400).json({ message: "all fields are required." });
+  }
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    return res.status(400).json({ message: "email is already in use." });
+  }
+
+  const isUserNameUnique = await User.findOne({ username });
+
+  if (isUserNameUnique) {
+    return res
+      .status(400)
+      .json({ message: "username is already taken try something new." });
+  }
+
+  const newUser = await User.create({ ...req.body });
+
+  if (newUser) {
+    res.status(201).json({ message: "signup successful" });
+  } else {
+    next();
+  }
 }
 
 export async function signIn(req: Request, res: Response) {
