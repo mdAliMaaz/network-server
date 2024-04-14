@@ -1,9 +1,10 @@
-import { NextFunction, Response, Request } from "express";
+import { NextFunction, Request } from "express";
 import jwt from "jsonwebtoken";
 import { CustomResponse } from "../utils/Response";
 import User from "../models/user.model";
+import { Jwt } from "../utils/Jwt";
 
-export function verifyAccessToken(req: Request, res: any, next: NextFunction) {
+export function verifyAccessToken(req: any, res: any, next: NextFunction) {
   const accessToken = req.cookies.access_token;
   const refreshToken = req.cookies.refresh_token;
 
@@ -16,15 +17,38 @@ export function verifyAccessToken(req: Request, res: any, next: NextFunction) {
     process.env.ACCESS_TOKEN_SECRET!,
     async (err: any, data: any) => {
       if (err) {
-        return res
-          .status(403)
-          .json(new CustomResponse(403, "access token is not valid"));
+        jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET!,
+          async (err: any, data: any) => {
+            if (err) {
+              res
+                .status(403)
+                .json(new CustomResponse(403, "invalid refresh token"));
+            }
+
+            const user = await User.findOne({ email: data.email }).select(
+              "-password"
+            );
+            if (user) {
+              const { accessToken, refreshToken } = Jwt.refreshToken({
+                email: user.email,
+                username: user.username,
+              });
+              res.cookie("access_token", accessToken);
+              res.cookie("refresh_token", refreshToken);
+              req.user = user;
+              next();
+            }
+          }
+        );
       } else {
         const user = await User.findOne({ email: data.email }).select(
           "-password"
         );
         if (user) {
-          res.user = user;
+          req.user = user;
+          next()
         } else {
           return res.status(403).json(new CustomResponse(403, "login failed"));
         }
@@ -32,5 +56,4 @@ export function verifyAccessToken(req: Request, res: any, next: NextFunction) {
     }
   );
 
-  next();
 }

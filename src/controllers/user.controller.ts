@@ -72,9 +72,9 @@ export async function getUsers(req: Request, res: Response) {
   res.send("i am getUsers");
 }
 
-export async function getProfile(req: Request, res: any) {
-  console.log(res.user);
-  res.send("getProfile");
+export async function getProfile(req: any, res: any) {
+  console.log(req.user);
+  res.send("get profile..");
 }
 
 export async function updateUser(req: Request, res: Response) {

@@ -12,4 +12,13 @@ export class Jwt {
       expiresIn: "7d",
     });
   }
+
+  public static refreshToken(payload: {}): {
+    accessToken: string;
+    refreshToken: string;
+  } {
+    const accessToken = this.generateAccessToken(payload);
+    const refreshToken = this.generateRefreshToken(payload);
+    return { accessToken, refreshToken };
+  }
 }
