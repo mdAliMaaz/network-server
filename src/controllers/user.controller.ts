@@ -1,6 +1,7 @@
 import User from "../model/user.model";
 import { NextFunction, Request, Response } from "express";
 import { SignUpUser } from "../types";
+import { CustomResponse } from "../utils/response";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   const { name, username, password, email }: SignUpUser = req.body;
@@ -25,7 +26,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
   const newUser = await User.create({ ...req.body });
 
   if (newUser) {
-    res.status(201).json({ message: "signup successful" });
+    res.status(201).json(new CustomResponse(201, "signup successfull."));
   } else {
     next();
   }
