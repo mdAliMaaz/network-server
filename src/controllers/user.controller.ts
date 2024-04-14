@@ -1,4 +1,4 @@
-import User from "../model/user.model";
+import User from "../models/user.model";
 import { NextFunction, Request, Response } from "express";
 import { SignUpUser } from "../types";
 import { CustomResponse } from "../utils/response";
