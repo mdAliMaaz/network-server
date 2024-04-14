@@ -68,17 +68,24 @@ export async function signIn(req: Request, res: Response) {
   );
 }
 
-export async function getUsers(req: Request, res: Response) {
-  res.send("i am getUsers");
-}
-
 export async function getProfile(req: any, res: any) {
-  console.log(req.user);
-  res.send("get profile..");
+  res.status(200).json(req.user);
 }
 
-export async function updateUser(req: Request, res: Response) {
-  res.send("i am update");
+export async function updateUser(req: any, res: Response) {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    { ...req.body },
+    { new: true }
+  );
+
+  if (updatedUser) {
+    res
+      .status(200)
+      .json(
+        new CustomResponse(200, "profile updated successfully", updatedUser)
+      );
+  }
 }
 
 export async function deleteUser(req: Request, res: Response) {

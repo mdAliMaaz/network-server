@@ -1,4 +1,4 @@
-import { NextFunction, Request } from "express";
+import { NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { CustomResponse } from "../utils/Response";
 import User from "../models/user.model";
@@ -35,8 +35,8 @@ export function verifyAccessToken(req: any, res: any, next: NextFunction) {
                 email: user.email,
                 username: user.username,
               });
-              res.cookie("access_token", accessToken);
-              res.cookie("refresh_token", refreshToken);
+              res.cookie("access_token", accessToken, { httpOnly: true });
+              res.cookie("refresh_token", refreshToken, { httpOnly: true });
               req.user = user;
               next();
             }
@@ -48,12 +48,11 @@ export function verifyAccessToken(req: any, res: any, next: NextFunction) {
         );
         if (user) {
           req.user = user;
-          next()
+          next();
         } else {
           return res.status(403).json(new CustomResponse(403, "login failed"));
         }
       }
     }
   );
-
 }

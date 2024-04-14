@@ -2,7 +2,6 @@ import express from "express";
 import {
   deleteUser,
   getProfile,
-  getUsers,
   signIn,
   signUp,
   updateUser,
@@ -11,11 +10,10 @@ import { verifyAccessToken } from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
-router.get("/", getUsers);
 router.post("/signup", signUp);
 router.post("/signin", signIn);
 router.get("/profile", verifyAccessToken, getProfile);
-router.patch("/update", updateUser);
-router.delete("/delete", deleteUser);
+router.patch("/update", verifyAccessToken, updateUser);
+router.delete("/delete", verifyAccessToken, deleteUser);
 
 export default router;
