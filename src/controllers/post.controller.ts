@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
 import Post from "../models/post.model";
-import User from "../models/user.model";
 import { CustomResponse } from "../utils/Response";
+import User from "../models/user.model";
 
 export async function createPost(req: any, res: any, next: NextFunction) {
   try {
@@ -68,6 +68,19 @@ export async function deletePost(req: any, res: any, next: NextFunction) {
 
 export async function getFeedPost(req: any, res: any, next: NextFunction) {
   try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res
+        .status(404)
+        .json(new CustomResponse(404, "user not found login please"));
+    }
+
+    const feedPost = await Post.find({
+      postedBy: { $in: user?.following },
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(new CustomResponse(200, "feed post", feedPost));
   } catch (error) {
     next(error);
   }

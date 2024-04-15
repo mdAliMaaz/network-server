@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### follow/unfollow
-POST http://localhost:8000/api/v1/users/follow/661ccaf6f4334de5bd8d0979
+POST http://localhost:8000/api/v1/users/follow/661ccad9f4334de5bd8d0975
 
 
 ### logout
