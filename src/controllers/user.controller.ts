@@ -88,8 +88,42 @@ export async function updateUser(req: any, res: Response) {
   }
 }
 
-export async function followOrUnfollow(req: any, res: Response) {
-  
+export async function followOrUnfollow(
+  req: any,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    if (req.user._id == req.params.id) {
+      res
+        .status(400)
+        .json(new CustomResponse(400, "you can't follow yourself"));
+    }
+
+    const currentUser = await User.findById(req.user._id);
+
+    const alreadyFollowing = currentUser?.following.includes(req.params.id);
+
+    if (!alreadyFollowing) {
+      const userA = await User.findByIdAndUpdate(req.user._id, {
+        $push: { following: req.params.id },
+      });
+      const userB = await User.findByIdAndUpdate(req.params.id, {
+        $push: { followers: req.user._id },
+      });
+      res.status(200).json(new CustomResponse(200, "userA follows userB"));
+    } else {
+      const userA = await User.findByIdAndUpdate(req.user._id, {
+        $pull: { following: req.params.id },
+      });
+      const userB = await User.findByIdAndUpdate(req.params.id, {
+        $pull: { followers: req.user._id },
+      });
+      res.status(200).json(new CustomResponse(200, "userA unfollows userB"));
+    }
+  } catch (error) {
+    next(error);
+  }
 }
 
 export async function logOut(req: any, res: Response) {

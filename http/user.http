@@ -5,9 +5,9 @@ POST  http://localhost:8000/api/v1/users/signup
 Content-Type: application/json
 
 {
-    "name":"maaz",
-    "username":"maazi@123",
-    "email":"maazi@gmail.com",
+    "name":"Tony Stark",
+    "username":"ironman@123",
+    "email":"ironman@gmail.com",
     "password":"123456"
 }
 
@@ -16,7 +16,7 @@ POST  http://localhost:8000/api/v1/users/signin
 Content-Type: application/json
 
 {
-    "email":"maazi@gmail.com",
+    "email":"batman@gmail.com",
     "password":"123456"
 }
 
@@ -31,6 +31,10 @@ Content-Type: application/json
     "username":"ironman",
     "name":"Tony Stark"
 }
+
+### follow/unfollow
+POST http://localhost:8000/api/v1/users/follow/661ccaf6f4334de5bd8d0979
+
 
 ### logout
 POSt   http://localhost:8000/api/v1/users/logout
