@@ -1,9 +1,23 @@
 import { NextFunction } from "express";
 import Post from "../models/post.model";
 import User from "../models/user.model";
+import { CustomResponse } from "../utils/Response";
 
 export async function createPost(req: any, res: any, next: NextFunction) {
-  res.send("create a post");
+  try {
+    const newPost = await Post.create({ postedBy: req.user._id, ...req.body });
+    if (newPost) {
+      res
+        .status(201)
+        .json(
+          new CustomResponse(201, "new post created successfully", newPost)
+        );
+    } else {
+      next();
+    }
+  } catch (error) {
+    next(error);
+  }
 }
 
 export async function getPost(req: any, res: any, next: NextFunction) {
