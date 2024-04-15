@@ -88,6 +88,14 @@ export async function updateUser(req: any, res: Response) {
   }
 }
 
-export async function deleteUser(req: Request, res: Response) {
-  res.send("i am delete");
+export async function followOrUnfollow(req: any, res: Response) {
+  
 }
+
+export async function logOut(req: any, res: Response) {
+  res.clearCookie("access_token");
+  res.clearCookie("refresh_token");
+  res.status(203).json(new CustomResponse(203, "successfully logged out"));
+}
+
+

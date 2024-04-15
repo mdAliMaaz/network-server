@@ -1,7 +1,8 @@
 import express from "express";
 import {
-  deleteUser,
+  followOrUnfollow,
   getProfile,
+  logOut,
   signIn,
   signUp,
   updateUser,
@@ -14,6 +15,7 @@ router.post("/signup", signUp);
 router.post("/signin", signIn);
 router.get("/profile", verifyAccessToken, getProfile);
 router.patch("/update", verifyAccessToken, updateUser);
-router.delete("/delete", verifyAccessToken, deleteUser);
+router.post("/follow/:id", verifyAccessToken, followOrUnfollow);
+router.post("/logout", verifyAccessToken, logOut);
 
 export default router;

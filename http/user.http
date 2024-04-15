@@ -32,5 +32,5 @@ Content-Type: application/json
     "name":"Tony Stark"
 }
 
-### delete
-DELETE   http://localhost:8000/api/v1/users/delete
+### logout
+POSt   http://localhost:8000/api/v1/users/logout
