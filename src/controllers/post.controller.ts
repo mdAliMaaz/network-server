@@ -1,4 +1,6 @@
 import { NextFunction } from "express";
+import Post from "../models/post.model";
+import User from "../models/user.model";
 
 export async function createPost(req: any, res: any, next: NextFunction) {
   res.send("create a post");

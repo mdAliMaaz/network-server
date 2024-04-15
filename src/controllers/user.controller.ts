@@ -38,53 +38,65 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export async function signIn(req: Request, res: Response) {
-  const { email, password }: ISignInUser = req.body;
+export async function signIn(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { email, password }: ISignInUser = req.body;
 
-  const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    return res.status(404).json(new CustomResponse(404, "User not found"));
+    if (!user) {
+      return res.status(404).json(new CustomResponse(404, "User not found"));
+    }
+
+    const isPasswordCorrect = HashPassword.check(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json(new CustomResponse(400, "Invalid Password"));
+    }
+    const payload = { email: user.email, username: user.username };
+
+    const accessToken = Jwt.generateAccessToken(payload);
+    const refreshToken = Jwt.generateRefreshToken(payload);
+
+    res.cookie("access_token", accessToken);
+    res.cookie("refresh_token", refreshToken);
+
+    res.status(203).json(
+      new CustomResponse(203, "login successfull", {
+        accessToken,
+        refreshToken,
+      })
+    );
+  } catch (error) {
+    next(error);
   }
-
-  const isPasswordCorrect = HashPassword.check(password, user.password);
-
-  if (!isPasswordCorrect) {
-    return res.status(400).json(new CustomResponse(400, "Invalid Password"));
-  }
-  const payload = { email: user.email, username: user.username };
-
-  const accessToken = Jwt.generateAccessToken(payload);
-  const refreshToken = Jwt.generateRefreshToken(payload);
-
-  res.cookie("access_token", accessToken);
-  res.cookie("refresh_token", refreshToken);
-
-  res.status(203).json(
-    new CustomResponse(203, "login successfull", {
-      accessToken,
-      refreshToken,
-    })
-  );
 }
 
-export async function getProfile(req: any, res: any) {
-  res.status(200).json(req.user);
+export async function getProfile(req: any, res: any, next: NextFunction) {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    next(error);
+  }
 }
 
-export async function updateUser(req: any, res: Response) {
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user._id,
-    { ...req.body },
-    { new: true }
-  );
+export async function updateUser(req: any, res: Response, next: NextFunction) {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { ...req.body },
+      { new: true }
+    );
 
-  if (updatedUser) {
-    res
-      .status(200)
-      .json(
-        new CustomResponse(200, "profile updated successfully", updatedUser)
-      );
+    if (updatedUser) {
+      res
+        .status(200)
+        .json(
+          new CustomResponse(200, "profile updated successfully", updatedUser)
+        );
+    }
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -126,10 +138,14 @@ export async function followOrUnfollow(
   }
 }
 
-export async function logOut(req: any, res: Response) {
-  res.clearCookie("access_token");
-  res.clearCookie("refresh_token");
-  res.status(203).json(new CustomResponse(203, "successfully logged out"));
+export async function logOut(req: any, res: Response, next: NextFunction) {
+  try {
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
+    res.status(203).json(new CustomResponse(203, "successfully logged out"));
+  } catch (error) {
+    next(error);
+  }
 }
 
 
