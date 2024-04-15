@@ -28,7 +28,11 @@ DELETE  http://localhost:8000/api/v1/posts/661d214ee18ad09bb6d57d2e
 POST  http://localhost:8000/api/v1/posts/reply/661d205b66b93e561ba30b04
 Content-Type: application/json
 
+{
+    "text":"you look pretty in that black dress."
+}
 
 ### like to a post
 POST http://localhost:8000/api/v1/posts/like/661d205b66b93e561ba30b04
 Content-Type: application/json
+

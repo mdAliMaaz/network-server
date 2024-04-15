@@ -66,7 +66,12 @@ export async function deletePost(req: any, res: any, next: NextFunction) {
   }
 }
 
-export async function getFeedPost(req: any, res: any, next: NextFunction) {}
+export async function getFeedPost(req: any, res: any, next: NextFunction) {
+  try {
+  } catch (error) {
+    next(error);
+  }
+}
 
 export async function likeAndUnLikePost(
   req: any,
@@ -100,6 +105,21 @@ export async function likeAndUnLikePost(
 
 export async function replyToPost(req: any, res: any, next: NextFunction) {
   try {
+    const reply = {
+      userId: req.user._id,
+      text: req.body.text,
+      userProfilePic: req.user.profilePic,
+      username: req.user.username,
+    };
+
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, {
+      $push: { replies: reply },
+    });
+    if (updatedPost) {
+      res.status(200).json(new CustomResponse(200, "you reply to post"));
+    } else {
+      res.status(400).json(new CustomResponse(400, "post not found"));
+    }
   } catch (error) {
     next(error);
   }
