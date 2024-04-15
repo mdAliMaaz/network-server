@@ -66,8 +66,33 @@ export async function deletePost(req: any, res: any, next: NextFunction) {
   }
 }
 
-export async function getFeedPost(req: any, res: any, next: NextFunction) {
+export async function getFeedPost(req: any, res: any, next: NextFunction) {}
+
+export async function likeAndUnLikePost(
+  req: any,
+  res: any,
+  next: NextFunction
+) {
   try {
+    const post = await Post.findById(req.params.id);
+
+    if (post) {
+      const alreadyLiked = post.likes.includes(req.user._id);
+
+      if (!alreadyLiked) {
+        const updaetdPost = await Post.findByIdAndUpdate(req.params.id, {
+          $push: { likes: req.user._id },
+        });
+        res.status(200).json(new CustomResponse(200, "you liked the post"));
+      } else {
+        const updaetdPost = await Post.findByIdAndUpdate(req.params.id, {
+          $pull: { likes: req.user._id },
+        });
+        res.status(200).json(new CustomResponse(200, "you unliked the post"));
+      }
+    } else {
+      res.status(404).json(new CustomResponse(404, "post not found"));
+    }
   } catch (error) {
     next(error);
   }

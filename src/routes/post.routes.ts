@@ -6,6 +6,7 @@ import {
   deletePost,
   getFeedPost,
   replyToPost,
+  likeAndUnLikePost,
 } from "../controllers/post.controller";
 import { verifyAccessToken } from "../middlewares/auth.middleware";
 
@@ -17,5 +18,6 @@ router.get("/:id", verifyAccessToken, getPost);
 router.patch("/:id", verifyAccessToken, updatePost);
 router.delete("/:id", verifyAccessToken, deletePost);
 router.post("/reply/:id", verifyAccessToken, replyToPost);
+router.post("/like/:id", verifyAccessToken, likeAndUnLikePost);
 
 export default router;
