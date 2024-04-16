@@ -10,8 +10,8 @@ export async function verifyAccessToken(
   next: NextFunction
 ) {
   try {
-    const accessToken = req.cookies.access_token;
-    const refreshToken = req.cookies.refresh_token;
+    const accessToken = req.cookies.network_access_token;
+    const refreshToken = req.cookies.network_refresh_token;
 
     if (!accessToken) {
       return res
@@ -48,8 +48,12 @@ export async function verifyAccessToken(
                 username: user.username,
               });
 
-              res.cookie("access_token", accessToken, { httpOnly: true });
-              res.cookie("refresh_token", refreshToken, { httpOnly: true });
+              res.cookie("network_access_token", accessToken, {
+                httpOnly: true,
+              });
+              res.cookie("network_refresh_token", refreshToken, {
+                httpOnly: true,
+              });
               req.user = user;
               next();
             }

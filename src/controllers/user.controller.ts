@@ -58,8 +58,8 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
     const accessToken = Jwt.generateAccessToken(payload);
     const refreshToken = Jwt.generateRefreshToken(payload);
 
-    res.cookie("access_token", accessToken);
-    res.cookie("refresh_token", refreshToken);
+    res.cookie("netwotk_access_token", accessToken);
+    res.cookie("network_refresh_token", refreshToken);
 
     res.status(203).json(
       new CustomResponse(203, "login successfull", {
@@ -140,8 +140,8 @@ export async function followOrUnfollow(
 
 export async function logOut(req: any, res: Response, next: NextFunction) {
   try {
-    res.clearCookie("access_token");
-    res.clearCookie("refresh_token");
+    res.clearCookie("network_access_token");
+    res.clearCookie("network_refresh_token");
     res.status(203).json(new CustomResponse(203, "successfully logged out"));
   } catch (error) {
     next(error);
