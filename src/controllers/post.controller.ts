@@ -10,7 +10,7 @@ export async function createPost(req: any, res: any, next: NextFunction) {
       res
         .status(201)
         .json(
-          new CustomResponse(201, "new post created successfully", newPost)
+          new CustomResponse(201, "new post created successfully", "", newPost)
         );
     } else {
       next();
@@ -24,9 +24,9 @@ export async function getPost(req: any, res: any, next: NextFunction) {
   try {
     const post = await Post.findById(req.params.id);
     if (post) {
-      res.status(200).json(new CustomResponse(200, "OK", post));
+      res.status(200).json(new CustomResponse(200, "OK", "", post));
     } else {
-      res.status(400).json(new CustomResponse(400, "post not found"));
+      res.status(400).json(new CustomResponse(400, "", "post not found"));
     }
   } catch (error) {
     next(error);
@@ -43,10 +43,10 @@ export async function updatePost(req: any, res: any, next: NextFunction) {
       res
         .status(200)
         .json(
-          new CustomResponse(200, "post updated successfully", updatedPost)
+          new CustomResponse(200, "post updated successfully", "", updatedPost)
         );
     } else {
-      res.status(400).json(new CustomResponse(400, "post not found"));
+      res.status(400).json(new CustomResponse(400, "", "post not found"));
     }
   } catch (error) {
     next(error);
@@ -59,7 +59,7 @@ export async function deletePost(req: any, res: any, next: NextFunction) {
     if (deletedPost) {
       res.status(203).json(new CustomResponse(203, "post deleted"));
     } else {
-      res.status(404).json(new CustomResponse(404, "post not found"));
+      res.status(404).json(new CustomResponse(404, "", "post not found"));
     }
   } catch (error) {
     next(error);
@@ -73,14 +73,14 @@ export async function getFeedPost(req: any, res: any, next: NextFunction) {
     if (!user) {
       res
         .status(404)
-        .json(new CustomResponse(404, "user not found login please"));
+        .json(new CustomResponse(404, "", "user not found login please"));
     }
 
     const feedPost = await Post.find({
       postedBy: { $in: user?.following },
     }).sort({ createdAt: -1 });
 
-    res.status(200).json(new CustomResponse(200, "feed post", feedPost));
+    res.status(200).json(new CustomResponse(200, "feed post", "", feedPost));
   } catch (error) {
     next(error);
   }
@@ -109,7 +109,7 @@ export async function likeAndUnLikePost(
         res.status(200).json(new CustomResponse(200, "you unliked the post"));
       }
     } else {
-      res.status(404).json(new CustomResponse(404, "post not found"));
+      res.status(404).json(new CustomResponse(404, "", "post not found"));
     }
   } catch (error) {
     next(error);
@@ -131,7 +131,7 @@ export async function replyToPost(req: any, res: any, next: NextFunction) {
     if (updatedPost) {
       res.status(200).json(new CustomResponse(200, "you reply to post"));
     } else {
-      res.status(400).json(new CustomResponse(400, "post not found"));
+      res.status(400).json(new CustomResponse(400, "", "post not found"));
     }
   } catch (error) {
     next(error);

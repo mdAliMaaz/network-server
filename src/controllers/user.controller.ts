@@ -45,13 +45,13 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json(new CustomResponse(404, "User not found"));
+      return res.status(404).json(new CustomResponse(404,"" ,"User not found"));
     }
 
     const isPasswordCorrect = HashPassword.check(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json(new CustomResponse(400, "Invalid Password"));
+      return res.status(400).json(new CustomResponse(400, "","Invalid Password"));
     }
     const payload = { email: user.email, username: user.username };
 
@@ -62,10 +62,7 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
     res.cookie("network_refresh_token", refreshToken);
 
     res.status(203).json(
-      new CustomResponse(203, "login successfull", {
-        accessToken,
-        refreshToken,
-      })
+      new CustomResponse(203, "login successfull")
     );
   } catch (error) {
     next(error);
@@ -92,7 +89,7 @@ export async function updateUser(req: any, res: Response, next: NextFunction) {
       res
         .status(200)
         .json(
-          new CustomResponse(200, "profile updated successfully", updatedUser)
+          new CustomResponse(200, "profile updated successfully", "",updatedUser)
         );
     }
   } catch (error) {
