@@ -61,9 +61,9 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
     res.cookie("netwotk_access_token", accessToken);
     res.cookie("network_refresh_token", refreshToken);
 
-    res.status(203).json(
-      new CustomResponse(203, "login successfull")
-    );
+    res
+      .status(203)
+      .json(new CustomResponse(203, "login successfull", "", user));
   } catch (error) {
     next(error);
   }
