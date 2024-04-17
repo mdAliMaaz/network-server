@@ -10,12 +10,16 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     const { name, username, password, email }: ISignUpUser = req.body;
 
     if (!name || !username || !password || !email) {
-      return res.status(400).json({ message: "all fields are required." });
+      return res
+        .status(400)
+        .json(new CustomResponse(400, "", "all fields are reqired"));
     }
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.status(400).json({ message: "email is already in use." });
+      return res
+        .status(400)
+        .json(new CustomResponse(400, "", "email already in use"));
     }
 
     const isUserNameUnique = await User.findOne({ username });
@@ -23,7 +27,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     if (isUserNameUnique) {
       return res
         .status(400)
-        .json({ message: "username is already taken try something new." });
+        .json(new CustomResponse(400, "", "username already taken"));
     }
 
     const newUser = await User.create({ ...req.body });
