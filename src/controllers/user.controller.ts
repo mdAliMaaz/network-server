@@ -58,7 +58,7 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
     const accessToken = Jwt.generateAccessToken(payload);
     const refreshToken = Jwt.generateRefreshToken(payload);
 
-    res.cookie("netwotk_access_token", accessToken);
+    res.cookie("network_access_token", accessToken);
     res.cookie("network_refresh_token", refreshToken);
 
     res
