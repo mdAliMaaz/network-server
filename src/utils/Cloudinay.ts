@@ -23,4 +23,13 @@ export class Cloudinary {
       console.log("Cloudinary Error:", error.message);
     }
   }
+
+  public static async delete(public_Id: string) {
+    try {
+      const result = await v2.uploader.destroy(public_Id);
+      console.log(result);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }
 }

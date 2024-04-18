@@ -17,21 +17,25 @@ router.post(
   async (req: any, res: any) => {
     const filePath = req.file?.path;
     try {
-      if (req.file?.path) {
-        const { url, public_id } = await Cloudinary.uploadSingle(
-          req.file?.path
-        );
+console.log(req.user.profilePic);
 
-        const user = await User.findById(req.user._id);
+if (req.user.profilePic.public_id) {
+  await Cloudinary.delete(req.user.profilePic.public_id);
+}
 
-        if (user) {
-          user.profilePic = { url, public_id };
-          await user.save();
-          fs.unlinkSync(filePath);
-        }
-      }
+if (req.file?.path) {
+  const { url, public_id } = await Cloudinary.uploadSingle(req.file?.path);
 
-      res.status(200).json(new CustomResponse(201, "Successfully uploaded"));
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.profilePic = { url, public_id };
+    await user.save();
+    fs.unlinkSync(filePath);
+  }
+}
+
+res.status(200).json(new CustomResponse(201, "Image Successfully uploaded"));
     } catch (error: any) {
       console.log("Uploading Error:", error.message);
     }
