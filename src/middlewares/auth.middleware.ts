@@ -16,7 +16,7 @@ export async function verifyAccessToken(
     if (!accessToken) {
       return res
         .status(403)
-        .json(new CustomResponse(403, "Access token not found"));
+        .json(new CustomResponse(403, "", "Access token not found"));
     }
 
     jwt.verify(
@@ -31,7 +31,7 @@ export async function verifyAccessToken(
               if (refreshTokenErr) {
                 return res
                   .status(403)
-                  .json(new CustomResponse(403, "Invalid refresh token"));
+                  .json(new CustomResponse(403, "", "Invalid refresh token"));
               }
 
               const user = await User.findOne({
@@ -40,7 +40,7 @@ export async function verifyAccessToken(
               if (!user) {
                 return res
                   .status(403)
-                  .json(new CustomResponse(403, "User not found"));
+                  .json(new CustomResponse(403, "", "User not found"));
               }
 
               const { accessToken, refreshToken } = Jwt.refreshToken({
@@ -65,7 +65,7 @@ export async function verifyAccessToken(
           if (!user) {
             return res
               .status(403)
-              .json(new CustomResponse(403, "User not found"));
+              .json(new CustomResponse(403, "", "User not found"));
           }
           req.user = user;
           next();

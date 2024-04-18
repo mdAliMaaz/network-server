@@ -23,9 +23,15 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     profilePic: {
-      type: String,
-      default:
-        "https://res.cloudinary.com/dmhcnhtng/image/upload/v1643044376/avatars/default_pic_jeaybr.png",
+      public_id: {
+        type: String,
+        default: "public_id",
+      },
+      url: {
+        type: String,
+        default:
+          "https://res.cloudinary.com/dmhcnhtng/image/upload/v1643044376/avatars/default_pic_jeaybr.png",
+      },
     },
     followers: {
       type: [String],

@@ -54,6 +54,7 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
 
     const isPasswordCorrect = HashPassword.check(password, user.password);
 
+
     if (!isPasswordCorrect) {
       return res.status(400).json(new CustomResponse(400, "","Invalid Password"));
     }
