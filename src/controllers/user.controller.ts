@@ -86,10 +86,9 @@ export async function updateUser(req: any, res: Response, next: NextFunction) {
   try {
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
-      { ...req.body },
+      { ...req.body.input },
       { new: true }
     );
-
     if (updatedUser) {
       res
         .status(200)
