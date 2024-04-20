@@ -4,6 +4,7 @@ import { ISignInUser, ISignUpUser } from "../types";
 import { CustomResponse } from "../utils/Response";
 import { HashPassword } from "../utils/Bcrypt";
 import { Jwt } from "../utils/Jwt";
+import bcrypt from "bcrypt";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
@@ -49,14 +50,22 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json(new CustomResponse(404,"" ,"User not found"));
+      return res
+        .status(404)
+        .json(new CustomResponse(404, "", "User not found"));
     }
 
-    const isPasswordCorrect = HashPassword.check(password, user.password);
-
+    const isPasswordCorrect = await HashPassword.check(password, user.password);
+    const bcryptedPassword = await bcrypt.hashSync(password, 10);
+    console.log(bcryptedPassword);
+    console.log(user.password);
+    console.log(isPasswordCorrect);
+    console.log(password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json(new CustomResponse(400, "","Invalid Password"));
+      return res
+        .status(400)
+        .json(new CustomResponse(400, "", "Invalid Password"));
     }
     const payload = { email: user.email, username: user.username };
 
