@@ -17,7 +17,7 @@ export const errorHandler = (err:any, req:Request, res:Response, next:NextFuncti
   }
 
   res.status(statusCode).json({
-      message: message,
-      stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    error: message,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 };

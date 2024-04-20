@@ -59,7 +59,7 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
   }
-  this.password = HashPassword.hash(this.password);
+  this.password = await HashPassword.hash(this.password);
 });
 
 const User = mongoose.model("User", userSchema);
