@@ -21,12 +21,14 @@ router.post(
         await Cloudinary.delete(req.user.profilePic.public_id);
       }
 
+      let user;
+
       if (req.file?.path) {
         const { url, public_id } = await Cloudinary.uploadSingle(
           req.file?.path
         );
 
-        const user = await User.findById(req.user._id);
+        user = await User.findById(req.user._id);
 
         if (user) {
           user.profilePic = { url, public_id };
@@ -37,7 +39,7 @@ router.post(
 
       res
         .status(200)
-        .json(new CustomResponse(201, "Image Successfully uploaded"));
+        .json(new CustomResponse(201, "Image Successfully uploaded", "",user));
     } catch (error: any) {
       console.log("Uploading Error:", error.message);
     }

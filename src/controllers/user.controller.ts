@@ -4,7 +4,6 @@ import { ISignInUser, ISignUpUser } from "../types";
 import { CustomResponse } from "../utils/Response";
 import { HashPassword } from "../utils/Bcrypt";
 import { Jwt } from "../utils/Jwt";
-import bcrypt from "bcrypt";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
@@ -56,11 +55,6 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
     }
 
     const isPasswordCorrect = await HashPassword.check(password, user.password);
-    const bcryptedPassword = await bcrypt.hashSync(password, 10);
-    console.log(bcryptedPassword);
-    console.log(user.password);
-    console.log(isPasswordCorrect);
-    console.log(password);
 
     if (!isPasswordCorrect) {
       return res
@@ -85,7 +79,10 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
 
 export async function getProfile(req: any, res: any, next: NextFunction) {
   try {
-    res.status(200).json(req.user);
+    const user = await User.findOne(req.user._id);
+    if (user) {
+      res.status(200).json(user);
+    }
   } catch (error) {
     next(error);
   }
