@@ -91,7 +91,18 @@ export async function getFeedPost(req: any, res: any, next: NextFunction) {
       postedBy: { $in: user?.following },
     }).sort({ createdAt: -1 });
 
-    res.status(200).json(new CustomResponse(200, "feed post", "", feedPost));
+    const currentUserPost = await Post.find({ postedBy: req.user._id }).sort({
+      createdAt: -1,
+    });
+
+    res
+      .status(200)
+      .json(
+        new CustomResponse(200, "feed post", "", [
+          ...feedPost,
+          ...currentUserPost,
+        ])
+      );
   } catch (error) {
     next(error);
   }
