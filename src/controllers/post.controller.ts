@@ -2,10 +2,21 @@ import { NextFunction } from "express";
 import Post from "../models/post.model";
 import { CustomResponse } from "../utils/Response";
 import User from "../models/user.model";
+import { Cloudinary } from "../utils/Cloudinay";
+import fs from "fs";
 
 export async function createPost(req: any, res: any, next: NextFunction) {
   try {
+    const filePath = req.file?.path;
+
+    if (filePath) {
+      const { public_id, url } = await Cloudinary.uploadPostImage(filePath);
+      req.body.image = { public_id, url };
+      fs.unlinkSync(filePath);
+    }
+
     const newPost = await Post.create({ postedBy: req.user._id, ...req.body });
+
     if (newPost) {
       res
         .status(201)

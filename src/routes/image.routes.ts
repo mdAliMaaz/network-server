@@ -46,6 +46,15 @@ router.post(
   }
 );
 
-router.post("/upload-many", (req, res) => {});
+router.post("/upload-post", async (req, res) => {
+  const filePath = req.file?.path;
+  try {
+    if (filePath) {
+      const { url, public_id } = await Cloudinary.uploadPostImage(filePath);
+    }
+  } catch (error: any) {
+    console.log("Errowhile uploading post image", error.message);
+  }
+});
 
 export default router;

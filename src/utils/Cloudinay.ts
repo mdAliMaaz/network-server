@@ -32,4 +32,20 @@ export class Cloudinary {
       console.log(error.message);
     }
   }
+
+  public static async uploadPostImage(
+    imagePath: string
+  ): Promise<SingleResult | any> {
+    try {
+      const result = await v2.uploader.upload(imagePath, {
+        folder: "network/post",
+      });
+
+      if (result) {
+        return { url: result.url, public_id: result.public_id };
+      }
+    } catch (error: any) {
+      console.log("Cloudinary Error:", error.message);
+    }
+  }
 }

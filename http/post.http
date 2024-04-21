@@ -9,7 +9,7 @@ Content-Type: application/json
 GET http://localhost:8000/api/v1/posts
 
 ### get a post
-Get http://localhost:8000/api/v1/posts/661d205b66b93e561ba30b04
+GET http://localhost:8000/api/v1/posts/661d205b66b93e561ba30b04
 
 
 ### update a post

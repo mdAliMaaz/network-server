@@ -9,10 +9,13 @@ import {
   likeAndUnLikePost,
 } from "../controllers/post.controller";
 import { verifyAccessToken } from "../middlewares/auth.middleware";
+import multer from "multer";
 
 const router = express.Router();
 
-router.post("/", verifyAccessToken, createPost);
+const upload = multer({ dest: "uploads/" });
+
+router.post("/", verifyAccessToken, upload.single("postImg"), createPost);
 router.get("/", verifyAccessToken, getFeedPost);
 router.get("/:id", verifyAccessToken, getPost);
 router.patch("/:id", verifyAccessToken, updatePost);
