@@ -88,6 +88,19 @@ export async function getProfile(req: any, res: any, next: NextFunction) {
   }
 }
 
+export async function postedBy(req: any, res: any, next: NextFunction) {
+  try {
+    const { userId } = req.params;
+    console.log(userId);
+    const user = await User.findById(userId);
+    if (user) {
+      res.status(200).json(user);
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function updateUser(req: any, res: Response, next: NextFunction) {
   try {
     const updatedUser = await User.findByIdAndUpdate(

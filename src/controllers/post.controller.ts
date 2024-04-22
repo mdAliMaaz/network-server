@@ -44,6 +44,8 @@ export async function getPost(req: any, res: any, next: NextFunction) {
   }
 }
 
+
+
 export async function updatePost(req: any, res: any, next: NextFunction) {
   try {
     const updatedPost = await Post.findByIdAndUpdate(req.params.id, {
