@@ -91,20 +91,25 @@ export async function getFeedPost(req: any, res: any, next: NextFunction) {
 
     const feedPost = await Post.find({
       postedBy: { $in: user?.following },
-    }).sort({ createdAt: -1 });
+    });
 
     const currentUserPost = await Post.find({ postedBy: req.user._id }).sort({
       createdAt: -1,
     });
 
-    res
-      .status(200)
-      .json(
-        new CustomResponse(200, "feed post", "", [
-          ...feedPost,
-          ...currentUserPost,
-        ])
-      );
+    const result = [...feedPost, ...currentUserPost].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+
+      // Check if either date is invalid, return 0 (no change in sorting)
+      if (isNaN(dateA) || isNaN(dateB)) {
+        return 0;
+      }
+
+      return dateB - dateA;
+    });
+
+    res.status(200).json(new CustomResponse(200, "feed post", "", result));
   } catch (error) {
     next(error);
   }
