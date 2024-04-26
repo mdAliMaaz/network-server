@@ -149,9 +149,10 @@ export async function replyToPost(req: any, res: any, next: NextFunction) {
     const reply = {
       userId: req.user._id,
       text: req.body.text,
-      userProfilePic: req.user.profilePic,
+      userProfilePic: req.user.profilePic.url,
       username: req.user.username,
     };
+
 
     const updatedPost = await Post.findByIdAndUpdate(req.params.id, {
       $push: { replies: reply },
