@@ -2,6 +2,7 @@ import express from "express";
 import {
   followOrUnfollow,
   getProfile,
+  getUserByName,
   logOut,
   postedBy,
   signIn,
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.post("/signup", signUp);
 router.post("/signin", signIn);
+router.get("/:username", verifyAccessToken, getUserByName);
 router.get("/profile", verifyAccessToken, getProfile);
 router.get("/postedBy/:userId", verifyAccessToken, postedBy);
 router.patch("/update", verifyAccessToken, updateUser);

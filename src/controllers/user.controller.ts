@@ -168,3 +168,23 @@ export async function logOut(req: any, res: Response, next: NextFunction) {
 }
 
 
+export async function getUserByName(
+  req: any,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const user = await User.findOne({ username: req.params.username }).select(
+      "-password"
+    );
+
+    if (user) {
+      res.status(200).json(new CustomResponse(200, "Ok", "", user));
+    } else {
+      res.status(404).json(new CustomResponse(404, "", "User Not Found",));
+    }
+    
+  } catch (error) {
+    next(error);
+  }
+}
