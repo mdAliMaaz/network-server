@@ -166,7 +166,9 @@ export async function replyToPost(req: any, res: any, next: NextFunction) {
 
 export async function postByUserName(req: any, res: any, next: NextFunction) {
   try {
-    const posts = await Post.find({ postedBy: req.params.id });
+    const posts = await Post.find({ postedBy: req.params.id }).sort({
+      createdAt: -1,
+    });
 
     if (posts) {
       res.status(200).json(new CustomResponse(200, "Ok", "", posts));
