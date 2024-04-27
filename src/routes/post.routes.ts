@@ -7,6 +7,7 @@ import {
   getFeedPost,
   replyToPost,
   likeAndUnLikePost,
+  postByUserName,
 } from "../controllers/post.controller";
 import { verifyAccessToken } from "../middlewares/auth.middleware";
 import multer from "multer";
@@ -20,6 +21,7 @@ router.get("/", verifyAccessToken, getFeedPost);
 router.get("/:id", verifyAccessToken, getPost);
 router.patch("/:id", verifyAccessToken, updatePost);
 router.delete("/:id", verifyAccessToken, deletePost);
+router.get("/user/:id", verifyAccessToken, postByUserName);
 router.post("/reply/:id", verifyAccessToken, replyToPost);
 router.post("/like/:id", verifyAccessToken, likeAndUnLikePost);
 

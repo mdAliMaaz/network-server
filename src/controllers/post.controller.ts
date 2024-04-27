@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import { NextFunction, response } from "express";
 import Post from "../models/post.model";
 import { CustomResponse } from "../utils/Response";
 import User from "../models/user.model";
@@ -43,8 +43,6 @@ export async function getPost(req: any, res: any, next: NextFunction) {
     next(error);
   }
 }
-
-
 
 export async function updatePost(req: any, res: any, next: NextFunction) {
   try {
@@ -153,7 +151,6 @@ export async function replyToPost(req: any, res: any, next: NextFunction) {
       username: req.user.username,
     };
 
-
     const updatedPost = await Post.findByIdAndUpdate(req.params.id, {
       $push: { replies: reply },
     });
@@ -167,4 +164,16 @@ export async function replyToPost(req: any, res: any, next: NextFunction) {
   }
 }
 
+export async function postByUserName(req: any, res: any, next: NextFunction) {
+  try {
+    const posts = await Post.find({ postedBy: req.params.id });
 
+    if (posts) {
+      res.status(200).json(new CustomResponse(200, "Ok", "", posts));
+    } else {
+      res.status(200).json(new CustomResponse(404, "", "No Post yet"));
+    }
+  } catch (error) {
+    next(error);
+  }
+}
