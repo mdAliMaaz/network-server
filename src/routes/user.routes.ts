@@ -15,11 +15,11 @@ const router = express.Router();
 
 router.post("/signup", signUp);
 router.post("/signin", signIn);
-router.get("/:username", verifyAccessToken, getUserByName);
 router.get("/profile", verifyAccessToken, getProfile);
-router.get("/postedBy/:userId", verifyAccessToken, postedBy);
 router.patch("/update", verifyAccessToken, updateUser);
+router.get("/postedBy/:userId", verifyAccessToken, postedBy);
 router.post("/follow/:id", verifyAccessToken, followOrUnfollow);
 router.post("/logout", verifyAccessToken, logOut);
+router.get("/:username", verifyAccessToken, getUserByName);
 
 export default router;

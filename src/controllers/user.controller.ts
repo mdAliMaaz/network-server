@@ -79,11 +79,12 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
 
 export async function getProfile(req: any, res: any, next: NextFunction) {
   try {
-    const user = await User.findOne(req.user._id);
+    const user = await User.findOne(req.user._id).select("-password");
     if (user) {
       res.status(200).json(user);
     }
   } catch (error) {
+    console.log("Hi");
     next(error);
   }
 }
