@@ -1,4 +1,4 @@
-import { NextFunction, response } from "express";
+import { NextFunction } from "express";
 import Post from "../models/post.model";
 import { CustomResponse } from "../utils/Response";
 import User from "../models/user.model";
