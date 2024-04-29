@@ -1,0 +1,10 @@
+### Send Message
+POST http://localhost:8000/api/v1/message/send/6623838da62a70636ee5c6b7
+Content-Type: application/json
+
+{
+    "message":"Do ypu some time for me ?"
+}
+
+### Get Message
+GET http://localhost:8000/api/v1/message/6623838da62a70636ee5c6b7

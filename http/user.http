@@ -16,7 +16,7 @@ POST  http://localhost:8000/api/v1/users/signin
 Content-Type: application/json
 
 {
-    "email":"batman@gmail.com",
+    "email":"spiderman@gmail.com",
     "password":"123456"
 }
 
