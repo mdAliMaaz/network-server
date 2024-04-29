@@ -26,7 +26,7 @@ export async function sendMessages(req: any, res: any, next: NextFunction) {
     }
 
     await Promise.all([conversation.save(), newMessage.save()]);
-    
+
     res
       .status(201)
       .json(new CustomResponse(201, "message sent", "", newMessage));
@@ -36,4 +36,24 @@ export async function sendMessages(req: any, res: any, next: NextFunction) {
   }
 }
 
-export async function getMessages(req: any, res: any, next: NextFunction) {}
+export async function getMessages(req: any, res: any, next: NextFunction) {
+  try {
+    const userToChatId = req.params.id;
+    const senderID = req.user._id;
+    const conversation = await Conversation.findOne({
+      participants: { $all: [senderID, userToChatId] },
+    }).populate("messages");
+
+    if (!conversation) {
+      return res
+        .status(404)
+        .json(new CustomResponse(404, "", "no message found", []));
+    } else {
+      const messages = conversation.messages;
+      res.status(200).json(messages);
+    }
+  } catch (error: any) {
+    console.log("Error in sendMessage controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
