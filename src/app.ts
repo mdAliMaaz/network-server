@@ -6,6 +6,7 @@ import postRouter from "./routes/post.routes";
 import imageRouter from "./routes/image.routes";
 import { errorHandler, notFound } from "./middlewares/errorhandler";
 import { v2 as cloudinary } from "cloudinary";
+import messageRouter from "./routes/message.routes";
 
 export const app = express();
 
@@ -28,6 +29,7 @@ app.use(cookiePareser());
 // !routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/images", imageRouter);
 
 
