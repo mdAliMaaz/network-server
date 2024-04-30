@@ -38,3 +38,6 @@ POST http://localhost:8000/api/v1/users/follow/661ccad9f4334de5bd8d0975
 
 ### logout
 POST   http://localhost:8000/api/v1/users/logout
+
+### get users
+GET  http://localhost:8000/api/v1/users

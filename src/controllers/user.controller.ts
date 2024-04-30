@@ -5,6 +5,22 @@ import { CustomResponse } from "../utils/Response";
 import { HashPassword } from "../utils/Bcrypt";
 import { Jwt } from "../utils/Jwt";
 
+export async function getUsers(req: any, res: any, next: NextFunction) {
+  try {
+    const users = await User.find({ _id: { $ne: req.user._id } }).select(
+      "-password"
+    );
+
+    if (users) {
+      res.status(200).json(users);
+    } else {
+      res.status(404).json(new CustomResponse(404, "", "No users found"));
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
     const { name, username, password, email }: ISignUpUser = req.body;

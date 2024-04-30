@@ -3,7 +3,7 @@ POST http://localhost:8000/api/v1/message/send/6623838da62a70636ee5c6b7
 Content-Type: application/json
 
 {
-    "message":"Do ypu some time for me ?"
+    "message":"Do you some time for me ?"
 }
 
 ### Get Message
