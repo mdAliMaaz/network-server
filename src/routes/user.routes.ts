@@ -2,6 +2,7 @@ import express from "express";
 import {
   followOrUnfollow,
   getProfile,
+  getUserById,
   getUserByName,
   getUsers,
   logOut,
@@ -15,6 +16,7 @@ import { verifyAccessToken } from "../middlewares/auth.middleware";
 const router = express.Router();
 
 router.get("/", verifyAccessToken, getUsers);
+router.get("/:id", verifyAccessToken, getUserById);
 router.post("/signup", signUp);
 router.post("/signin", signIn);
 router.get("/profile", verifyAccessToken, getProfile);

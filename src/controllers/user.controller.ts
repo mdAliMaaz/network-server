@@ -21,6 +21,23 @@ export async function getUsers(req: any, res: any, next: NextFunction) {
   }
 }
 
+export async function getUserById(req: any, res: any, next: NextFunction) {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if (user) {
+      res.status(200).json(new CustomResponse(200, "Ok", "", user));
+    } else {
+      res.status(404).json(new CustomResponse(404, "", "User Not Found"));
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+
+
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
     const { name, username, password, email }: ISignUpUser = req.body;
