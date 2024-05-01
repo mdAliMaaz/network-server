@@ -2,6 +2,7 @@ import { NextFunction } from "express";
 import Conversation from "../models/conversation.mode";
 import Message from "../models/message.model";
 import { CustomResponse } from "../utils/Response";
+import { getReceiverSocketId, io } from "../socket";
 
 export async function sendMessages(req: any, res: any, next: NextFunction) {
   try {
@@ -27,6 +28,12 @@ export async function sendMessages(req: any, res: any, next: NextFunction) {
 
     await Promise.all([conversation.save(), newMessage.save()]);
 
+    const receiverSocketId = getReceiverSocketId(receiverId);
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
+
     res
       .status(201)
       .json(new CustomResponse(201, "message sent", "", newMessage));
@@ -36,24 +43,22 @@ export async function sendMessages(req: any, res: any, next: NextFunction) {
   }
 }
 
-export async function getMessages(req: any, res: any, next: NextFunction) {
+export const getMessages = async (req: any, res: any) => {
   try {
     const userToChatId = req.params.id;
-    const senderID = req.user._id;
-    const conversation = await Conversation.findOne({
-      participants: { $all: [senderID, userToChatId] },
-    }).populate("messages");
+    const senderId = req.user._id;
 
-    if (!conversation) {
-      return res
-        .status(404)
-        .json(new CustomResponse(404, "", "no message found", []));
-    } else {
-      const messages = conversation.messages;
-      res.status(200).json(messages);
-    }
+    const conversation = await Conversation.findOne({
+      participants: { $all: [senderId, userToChatId] },
+    }).populate("messages"); // NOT REFERENCE BUT ACTUAL MESSAGES
+
+    if (!conversation) return res.status(200).json([]);
+
+    const messages = conversation.messages;
+
+    res.status(200).json(messages);
   } catch (error: any) {
-    console.log("Error in sendMessage controller: ", error.message);
+    console.log("Error in getMessages controller: ", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
