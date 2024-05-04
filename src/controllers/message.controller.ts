@@ -1,17 +1,16 @@
 import { NextFunction } from "express";
 import Conversation from "../models/conversation.mode";
 import Message from "../models/message.model";
-import { CustomResponse } from "../utils/Response";
 import { getReceiverSocketId, io } from "../socket";
 
 export async function sendMessages(req: any, res: any, next: NextFunction) {
   try {
+    const { message } = req.body;
+    const { id: receiverId } = req.params;
     const senderId = req.user._id;
-    const receiverId = req.params.id;
-    const message = req.body.message;
 
     let conversation = await Conversation.findOne({
-      participants: [senderId, receiverId],
+      participants: { $all: [senderId, receiverId] },
     });
 
     if (!conversation) {
@@ -20,7 +19,11 @@ export async function sendMessages(req: any, res: any, next: NextFunction) {
       });
     }
 
-    const newMessage = new Message({ senderId, receiverId, message });
+    const newMessage = new Message({
+      senderId,
+      receiverId,
+      message,
+    });
 
     if (newMessage) {
       conversation.messages.push(newMessage._id);
@@ -28,15 +31,14 @@ export async function sendMessages(req: any, res: any, next: NextFunction) {
 
     await Promise.all([conversation.save(), newMessage.save()]);
 
+    // SOCKET IO FUNCTIONALITY WILL GO HERE
     const receiverSocketId = getReceiverSocketId(receiverId);
-
     if (receiverSocketId) {
+      // io.to(<socket_id>).emit() used to send events to specific client
       io.to(receiverSocketId).emit("newMessage", newMessage);
     }
 
-    res
-      .status(201)
-      .json(new CustomResponse(201, "message sent", "", newMessage));
+    res.status(201).json(newMessage);
   } catch (error: any) {
     console.log("Error in sendMessage controller: ", error.message);
     res.status(500).json({ error: "Internal server error" });
@@ -48,9 +50,9 @@ export const getMessages = async (req: any, res: any) => {
     const userToChatId = req.params.id;
     const senderId = req.user._id;
 
-    const conversation = await Conversation.findOne({
+    let conversation = await Conversation.findOne({
       participants: { $all: [senderId, userToChatId] },
-    }).populate("messages"); // NOT REFERENCE BUT ACTUAL MESSAGES
+    }).populate("messages");
 
     if (!conversation) return res.status(200).json([]);
 
